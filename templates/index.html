@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhishGuard — URL Analyzer</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><span class="mark">◈</span><span>PHISHGUARD</span></div>
+      <span class="tag">URL SECURITY ANALYZER</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">DEFENSIVE WEB SECURITY</p>
+      <h1>Inspect a link.<br><em>Spot the signals.</em></h1>
+      <p class="intro">Analyze a URL for common phishing indicators without visiting the destination.</p>
+      <form method="post" class="search">
+        <input name="url" value="{{ url }}" placeholder="https://example.com/login" autocomplete="off">
+        <button type="submit">ANALYZE</button>
+      </form>
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    </section>
+
+    {% if result %}
+    <section class="result-grid">
+      <div class="score-card {{ result.risk_class }}">
+        <span>RISK SCORE</span>
+        <strong>{{ result.score }}</strong><small>/100</small>
+        <div class="risk">{{ result.risk }}</div>
+        <p>Heuristic assessment based on URL characteristics.</p>
+      </div>
+      <div class="details">
+        <div class="meta"><span>HOSTNAME</span><b>{{ result.hostname }}</b></div>
+        <div class="meta"><span>NORMALIZED URL</span><b>{{ result.normalized }}</b></div>
+        <div class="indicators">
+          {% for item in result.indicators %}
+          <article class="indicator {{ item.status }}">
+            <div><b>{{ item.name }}</b><p>{{ item.detail }}</p></div>
+            <span>{{ item.status|upper }}</span>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <div class="note">ⓘ {{ result.note }}</div>
+    {% endif %}
+
+    <footer>
+      <span>PHISHGUARD / LEARNING PROJECT</span>
+      <span>LOCAL ANALYSIS • NO AUTOMATIC SITE VISITS</span>
+    </footer>
+  </main>
+</body>
+</html>
